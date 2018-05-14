@@ -1,0 +1,121 @@
+nik87@nik87-X300-X340-X400-series:~/Загрузки/site/interactive$ make start
+[sudo] пароль для nik87: 
+Creating network "interactive_default" with the default driver
+Creating volume "interactive_janado_db_data" with default driver
+Creating volume "interactive_composer_vendor" with default driver
+Building php-fpm
+Step 1/8 : FROM phpdockerio/php71-fpm:latest
+ ---> 859a338ec87f
+Step 2/8 : WORKDIR "/application"
+ ---> Using cache
+ ---> 8a4f8e4e5038
+Step 3/8 : RUN apt-get update &&     apt-get install -y unzip && 	apt-get install -y supervisor && 	apt-get install -y libzip-dev && 	apt-get install -y libpng-dev && 	apt-get install -y wget &&     apt-get -y install git &&     apt-get -y install cron &&     apt-get -y install php7.1-sqlite3 php7.1-pdo  php7.1-mysql &&     apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
+ ---> Using cache
+ ---> 789c05591954
+Step 4/8 : COPY ./ /application
+ ---> e88ce6299ae1
+Removing intermediate container 6f93aca962ab
+Step 5/8 : RUN php composer.phar update && chmod -R 777 . && php composer.phar dump-autoload
+ ---> Running in 2a2db001a36d
+Do not run Composer as root/super user! See https://getcomposer.org/root for details
+Loading composer repositories with package information
+Updating dependencies (including require-dev)
+Package operations: 73 installs, 0 updates, 0 removals
+------
+-
+---
+-
+-
+-
+> Illuminate\Foundation\ComposerScripts::postUpdate
+> php artisan optimize
+Generating optimized class loader
+Compiling common classes
+Do not run Composer as root/super user! See https://getcomposer.org/root for details
+Generating autoload files
+ ---> d3e9ff7e78d3
+Removing intermediate container 2a2db001a36d
+Step 6/8 : RUN (crontab -l ; echo "* * * * * /usr/local/bin/php /application/artisan schedule:run >>/dev/null 2>&1") | crontab
+ ---> Running in 3376e42736c1
+no crontab for root
+ ---> d80ade06376e
+Removing intermediate container 3376e42736c1
+Step 7/8 : EXPOSE 9090
+ ---> Running in e3fbb0fda9a2
+ ---> 4bd4ee3ddd7f
+Removing intermediate container e3fbb0fda9a2
+Step 8/8 : CMD cp ./.env.example ./.env; php artisan l5-swagger:generate; service supervisor start; service cron start; chmod -R 777 .; php-fpm
+ ---> Running in 5f94d89f27fd
+ ---> 9b4bed3895a9
+Removing intermediate container 5f94d89f27fd
+Successfully built 9b4bed3895a9
+Successfully tagged interactive_php-fpm:latest
+WARNING: Image for service php-fpm was built because it did not already exist. To rebuild this image you must use `docker-compose build` or `docker-compose up --build`.
+Creating janado-beanstalkd ... done
+Creating janado-mailhog    ... done
+Creating janado-mysql      ... done
+Creating janado-php-fpm    ... done
+Creating janado-webserver  ... done
+nik87@nik87-X300-X340-X400-series:~/Загрузки/site/interactive$ make migration
+[sudo] пароль для nik87: 
+Do not run Composer as root/super user! See https://getcomposer.org/root for details
+Generating autoload files
+Migration table created successfully.
+Migrated: 2014_10_12_000000_create_users_table
+Migrated: 2014_10_12_100000_create_password_resets_table
+Migrated: 2016_10_17_083240_clientEvents
+Migrated: 2016_10_18_102951_elections
+Migrated: 2016_10_18_110104_election_levels
+Migrated: 2016_11_02_151732_create_questions_table
+Migrated: 2017_12_10_155935_create_slides_online_table
+Migrated: 2017_12_10_163238_add_active_slide_to_election_levels
+nik87@nik87-X300-X340-X400-series:~/Загрузки/site/interactive$ make seed
+Do not run Composer as root/super user! See https://getcomposer.org/root for details
+Generating autoload files
+Seeding: UserTableSeeder
+Seeding: EventsTableSeeder
+Seeding: ElectionTableSeeder
+nik87@nik87-X300-X340-X400-series:~/Загрузки/site/interactive$ git checkout -b Question_seeder
+M	app/SlidesOnline.php
+M	database/seeds/ElectionTableSeeder.php
+M	database/seeds/EventsTableSeeder.php
+M	public/js/old/chart-themes.js
+M	public/js/old/charts.js
+M	public/js/old/highcharts.js
+M	public/js/old/lang.js
+M	public/js/old/pusher.min.js
+M	public/js/old/script.js
+M	resources/views/pages/slides.blade.php
+Переключено на новую ветку «Question_seeder»
+nik87@nik87-X300-X340-X400-series:~/Загрузки/site/interactive$ git add .
+nik87@nik87-X300-X340-X400-series:~/Загрузки/site/interactive$ git commit
+Отмена коммита из-за пустого сообщения коммита.
+nik87@nik87-X300-X340-X400-series:~/Загрузки/site/interactive$ git commit -m "07.05.18
+> "
+[Question_seeder f7f4b86] 07.05.18
+ 10 files changed, 0 insertions(+), 0 deletions(-)
+ mode change 100644 => 100755 app/SlidesOnline.php
+ mode change 100644 => 100755 database/seeds/ElectionTableSeeder.php
+ mode change 100644 => 100755 database/seeds/EventsTableSeeder.php
+ mode change 100644 => 100755 public/js/old/chart-themes.js
+ mode change 100644 => 100755 public/js/old/charts.js
+ mode change 100644 => 100755 public/js/old/highcharts.js
+ mode change 100644 => 100755 public/js/old/lang.js
+ mode change 100644 => 100755 public/js/old/pusher.min.js
+ mode change 100644 => 100755 public/js/old/script.js
+ mode change 100644 => 100755 resources/views/pages/slides.blade.php
+nik87@nik87-X300-X340-X400-series:~/Загрузки/site/interactive$ git status
+На ветке Question_seeder
+нечего коммитить, нет изменений в рабочем каталоге
+nik87@nik87-X300-X340-X400-series:~/Загрузки/site/interactive$
+
+добавлен код в modelfactory -> questionsseeder
+
+nik87@nik87-X300-X340-X400-series:~/Загрузки/site/interactive$ make seed
+Do not run Composer as root/super user! See https://getcomposer.org/root for details
+Generating autoload files
+Seeding: UserTableSeeder
+Seeding: EventsTableSeeder
+Seeding: ElectionTableSeeder
+nik87@nik87-X300-X340-X400-series:~/Загрузки/site/interactive$
+
